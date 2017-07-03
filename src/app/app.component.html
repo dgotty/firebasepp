@@ -1,18 +1,41 @@
-<h1 *ngIf="authService.user | async">Welcome {{ (authService.user | async)?.email }}!</h1>
+<md-toolbar color="primary">
 
-<div *ngIf="!(authService.user | async)">
-  <input type="text" [(ngModel)]="email" placeholder="email">
-  <input type="password" [(ngModel)]="password" placeholder="password">
+  <span *ngIf="authService.user | async; else elseBlock">Welcome {{ (authService.user | async)?.email }}!</span>
+  <ng-template #elseBlock>Login below</ng-template>
 
-  <button (click)="signup()" [disabled]="!email || !password">
-    Signup
+  <button md-icon-button [md-menu-trigger-for]="menu" *ngIf="authService.user | async">
+    <md-icon>more_vert</md-icon>
   </button>
+</md-toolbar>
+<md-menu x-position="before" #menu="mdMenu">
+  <button md-menu-item (click)="logout()">Logout</button>
+</md-menu>
 
-  <button (click)="login()" [disabled]="!email || !password">
-    Login
-  </button>
-</div>
-
-<button (click)="logout()" *ngIf="authService.user | async">
-  Logout
-</button>
+<md-tab-group *ngIf="!(authService.user | async)">
+  <md-tab label="Login">
+    <md-card>
+      <form>
+        <md-input-container>
+          <input mdInput type="text" [(ngModel)]="email" placeholder="email" name="email">
+        </md-input-container>
+        <md-input-container>
+          <input mdInput type="password" [(ngModel)]="password" placeholder="password" name="password">
+        </md-input-container>
+        <button md-raised-button color="primary" (click)="login()" [disabled]="!email || !password">Login</button>
+      </form>
+    </md-card>
+  </md-tab>
+  <md-tab label="Signup">
+    <md-card>
+      <form>
+        <md-input-container>
+          <input mdInput type="text" [(ngModel)]="email" placeholder="email" name="email">
+        </md-input-container>
+        <md-input-container>
+          <input mdInput type="password" [(ngModel)]="password" placeholder="password" name="password">
+        </md-input-container>
+        <button md-raised-button color="primary" (click)="signup()" [disabled]="!email || !password">Signup</button>
+      </form>
+    </md-card>
+  </md-tab>
+</md-tab-group>
